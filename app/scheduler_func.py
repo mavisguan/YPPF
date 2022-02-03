@@ -201,6 +201,6 @@ def start_scheduler(with_scheduled_job=True, debug=False):
         log.operation_writer(SYSTEM_LOG, info,
                         "scheduler_func[start_scheduler]", log.STATE_ERROR)
         if debug: print(info)
-        scheduler.shutdown(wait=False)
+        # scheduler.shutdown(wait=False)
         if debug: print("successfully shutdown scheduler")
     if debug: print("———————————————— End     :   Debug ————————————————")
