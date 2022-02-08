@@ -1298,7 +1298,7 @@ class Course(models.Model):
         verbose_name_plural = verbose_name
         ordering = ["id"]
 
-    name = models.CharField("课程名称", max_length=60)
+    name = models.CharField("课程名称", max_length=60, default="")
     organization = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE,
@@ -1355,9 +1355,7 @@ class Course(models.Model):
         AESTHETICS = (3, "美")
         LABOUR = (4, "劳")
 
-    type = models.SmallIntegerField("课程类型",
-                                    choices=CourseType.choices,
-                                    default=CourseType.MORAL)
+    type = models.SmallIntegerField("课程类型", choices=CourseType.choices)
 
     capacity = models.IntegerField("课程容量", default=100)
     current_participants = models.IntegerField("当前选课人数", default=0)
@@ -1404,12 +1402,10 @@ class CourseParticipant(models.Model):
         verbose_name_plural = verbose_name
 
     # 保证不出现冲突的选课状态
-    course = models.OneToOneField(Course,
-                                  on_delete=models.CASCADE,
-                                  related_name="participant_set")
-    person = models.ForeignKey(NaturalPerson,
+    course = models.ForeignKey(Course,
                                on_delete=models.CASCADE,
-                               related_name="registration_set")
+                               related_name="participant_set")
+    person = models.ForeignKey(NaturalPerson, on_delete=models.CASCADE)
 
     class Status(models.IntegerChoices):
         SELECT = (0, "已选课")
