@@ -37,7 +37,10 @@ __all__ = [
     'Course',
     'CourseTime',
     'CourseParticipant',
+<<<<<<< HEAD
     'CourseRecord',
+=======
+>>>>>>> develop-mine
 ]
 
 
