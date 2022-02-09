@@ -37,10 +37,7 @@ __all__ = [
     'Course',
     'CourseTime',
     'CourseParticipant',
-<<<<<<< HEAD
     'CourseRecord',
-=======
->>>>>>> develop-mine
 ]
 
 
@@ -1290,7 +1287,7 @@ class Course(models.Model):
         verbose_name_plural = verbose_name
         ordering = ["id"]
 
-    name = models.CharField("课程名称", max_length=60)
+    title = models.CharField("课程名称", max_length=60)
     organization = models.ForeignKey(Organization,
                                      on_delete=models.CASCADE,
                                      verbose_name="开课组织")
@@ -1305,7 +1302,7 @@ class Course(models.Model):
 
     # 课程开设的周数
     times = models.SmallIntegerField("课程开设周数", default=7)
-    classroom = models.CharField("预期上课地点",
+    location = models.CharField("预期上课地点",
                                  max_length=60,
                                  default="",
                                  blank=True)
