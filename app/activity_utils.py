@@ -9,7 +9,6 @@ scheduler_func 依赖于 wechat_send 依赖于 utils
 文件中参数存在 activity 的函数需要在 transaction.atomic() 块中进行。
 如果存在预期异常，抛出 ActivityException，否则抛出其他异常
 """
-from YPPF.app.models import CourseTime
 from app.utils_dependency import *
 from app.models import (
     NaturalPerson,
@@ -22,6 +21,7 @@ from app.models import (
     Notification,
     ActivityPhoto,
     Course,
+    CourseTime,
 )
 from django.contrib.auth.models import User
 from app.utils import get_person_or_org, if_image
@@ -1478,7 +1478,7 @@ def create_course(request, course=None):
             photo=context['photo'],
             )
         course.save()
-        
+
         course_time = CourseTime.objects.create(
             course=course,
             start=course1_start,
