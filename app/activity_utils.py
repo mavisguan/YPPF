@@ -9,6 +9,7 @@ scheduler_func 依赖于 wechat_send 依赖于 utils
 文件中参数存在 activity 的函数需要在 transaction.atomic() 块中进行。
 如果存在预期异常，抛出 ActivityException，否则抛出其他异常
 """
+from YPPF.app.models import CourseTime
 from app.utils_dependency import *
 from app.models import (
     NaturalPerson,
@@ -1431,6 +1432,14 @@ def create_course(request, course=None):
     # 预选结束时间和补退选开始时间不应该相隔太近
     assert stage2_start > stage1_end + timedelta(days=3)
 
+    # 每周课程时间。这里是不是改成列表比较好？后面创建太麻烦了先写一个示例，要改了我再加上
+    course1_start = datetime.strptime(request.POST["course1_start"], "%Y-%m-%d %H:%M")  # 第1节课开始时间
+    course1_end = datetime.strptime(request.POST["course1_end"], "%Y-%m-%d %H:%M")  # 结束时间
+    course2_start = datetime.strptime(request.POST["course2_start"], "%Y-%m-%d %H:%M")  # 第2节课开始时间
+    course2_end = datetime.strptime(request.POST["course2_end"], "%Y-%m-%d %H:%M")  # 结束时间
+    course3_start = datetime.strptime(request.POST["course3_start"], "%Y-%m-%d %H:%M")  # 第3节课开始时间
+    course3_end = datetime.strptime(request.POST["course3_end"], "%Y-%m-%d %H:%M")  # 结束时间
+
     context['organization'] = request.POST["organization"]
     context['year'] = request.POST["year"]
     context['semester'] = request.POST["semester"]
@@ -1445,6 +1454,9 @@ def create_course(request, course=None):
     
     # 编辑已有课程
     if course is not None:
+        course_time = course.time_set.all()
+        course_time.delete()
+
         course.update(
             title=context["title"],
             organization=context['organization'],
@@ -1466,6 +1478,12 @@ def create_course(request, course=None):
             photo=context['photo'],
             )
         course.save()
+        
+        course_time = CourseTime.objects.create(
+            course=course,
+            start=course1_start,
+            end=course1_end,
+        )
 
     # 创建新课程
     else:
@@ -1503,7 +1521,7 @@ def create_course(request, course=None):
                         photo=context['photo'],
                     )
 
-        # 定时任务和微信消息有关吗，我还没了解怎么发微信消息orz
+        # 定时任务和微信消息有关吗，我还没了解怎么发微信消息orz不过定时任务还是能写出来的……应该
 
         # scheduler.add_job(notifyActivity, "date", id=f"activity_{activity.id}_remind",
         #     run_date=activity.start - timedelta(minutes=15), args=[activity.id, "remind"], replace_existing=True)
@@ -1516,5 +1534,11 @@ def create_course(request, course=None):
         #     run_date=activity.end, args=[activity.id, Activity.Status.PROGRESSING, Activity.Status.END])
 
         course.save()
+
+        course_time = CourseTime.objects.create(
+            course=course,
+            start=course1_start,
+            end=course1_end,
+        )
 
     return course.id, True

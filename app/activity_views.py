@@ -981,6 +981,7 @@ def addCourse(request, cid=None):
         log.record_traceback(request, e)
         return EXCEPT_REDIRECT
 
+    
     # 处理 POST 请求
     # 在这个界面，不会返回render，而是直接跳转到viewCourse，可以不设计bar_display
     if request.method == "POST" and request.POST:
@@ -1016,41 +1017,45 @@ def addCourse(request, cid=None):
             log.record_traceback(request, e)
             return EXCEPT_REDIRECT
 
+    
     # 下面的操作基本如无特殊说明，都是准备前端使用量
     html_display["applicant_name"] = me.oname
     html_display["app_avatar_path"] = me.get_user_ava() 
 
     try:
-        if course.status == Course.Status.WAITING:
+        if edit and course.status == Course.Status.WAITING:
             editable = True
+
+            title = utils.escape_for_templates(course.title)
+            organization = course.organization
+            year = course.year
+            semester = utils.escape_for_templates(course.semester)
+            times = course.times
+            location = utils.escape_for_templates(course.location)
+            teacher = utils.escape_for_templates(course.teacher)
+            stage1_start = course.stage1_start.strftime("%Y-%m-%d %H:%M")
+            stage1_end = course.stage1_end.strftime("%Y-%m-%d %H:%M")
+            stage2_start = course.stage2_start.strftime("%Y-%m-%d %H:%M")
+            stage2_end = course.stage2_end.strftime("%Y-%m-%d %H:%M")
+
+            # 上课时间。可以直接这样把queryset传给前端来获得时间吗，不行的话我就在这里循环取
+            course_time = course.time_set.all()
+            
+            bidding = course.bidding
+            introduction = escape_for_templates(course.introduction)
+            status = course.status
+            type = course.type
+            capacity = course.capacity
+            current_participants = course.current_participants
+            photo = str(course.photo)
     except Exception as e:
         log.record_traceback(request, e)
         return EXCEPT_REDIRECT
-
-    title = utils.escape_for_templates(course.title)
-    organization = course.organization
-    year = course.year
-    semester = utils.escape_for_templates(course.semester)
-    times = course.times
-    location = utils.escape_for_templates(course.location)
-    teacher = utils.escape_for_templates(course.teacher)
-
-    stage1_start = course.stage1_start.strftime("%Y-%m-%d %H:%M")
-    stage1_end = course.stage1_end.strftime("%Y-%m-%d %H:%M")
-    stage2_start = course.stage2_start.strftime("%Y-%m-%d %H:%M")
-    stage2_end = course.stage2_end.strftime("%Y-%m-%d %H:%M")
-    bidding = course.bidding
-    introduction = escape_for_templates(course.introduction)
-    status = course.status
-    type = course.type
-    capacity = course.capacity
-    current_participants = course.current_participants
-    photo = str(course.photo)
 
     html_display["today"] = datetime.now().strftime("%Y-%m-%d")
     if not edit:
         bar_display = utils.get_sidebar_and_navbar(request.user, "发起课程")
     else:
-        bar_display = utils.get_sidebar_and_navbar(request.user, "修改课程表")
-
-    return render(request, "course_add.html", locals())
+        bar_display = utils.get_sidebar_and_navbar(request.user, "修改课程")
+    
+    return render(request, "register_course.html", locals())

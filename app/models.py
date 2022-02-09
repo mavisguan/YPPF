@@ -1287,7 +1287,7 @@ class Course(models.Model):
         verbose_name_plural = verbose_name
         ordering = ["id"]
 
-    title = models.CharField("课程名称", max_length=60)
+    title = models.CharField("课程名称", max_length=60, default="")
     organization = models.ForeignKey(Organization,
                                      on_delete=models.CASCADE,
                                      verbose_name="开课组织")

@@ -716,7 +716,7 @@ class TransferRecordAdmin(admin.ModelAdmin):
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = [
-        "name",
+        "title",
         "organization",
         "bidding",
         "current_participants",

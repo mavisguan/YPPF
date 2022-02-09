@@ -71,6 +71,7 @@ urlpatterns = [
     path("examineActivity/<str:aid>", activity_views.examineActivity, name="examineActivity"),
     path("endActivity/", reimbursement_views.endActivity, name="endActivity"),
     path("modifyEndActivity/", reimbursement_views.modifyEndActivity, name="modifyEndActivity"),
+    path("addCourse/", activity_views.addCourse, name="addCourse"),
 ] + [
     # 组织相关操作
     path("saveShowPositionStatus", org_views.saveShowPositionStatus, name="saveShowPositionStatus"),
