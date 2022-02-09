@@ -1,4 +1,3 @@
-from YPPF.app.models import Organization
 from app.views_dependency import *
 from app.models import (
     NaturalPerson,
