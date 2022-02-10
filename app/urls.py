@@ -16,6 +16,7 @@ from . import (
     views,
     org_views,
     activity_views,
+    course_views,
     reimbursement_views,
     YQPoint_views,
 )
@@ -71,7 +72,10 @@ urlpatterns = [
     path("examineActivity/<str:aid>", activity_views.examineActivity, name="examineActivity"),
     path("endActivity/", reimbursement_views.endActivity, name="endActivity"),
     path("modifyEndActivity/", reimbursement_views.modifyEndActivity, name="modifyEndActivity"),
-    path("addCourse/", activity_views.addCourse, name="addCourse"),
+] + [
+    # 选课相关操作
+    path("addCourse/", course_views.addCourse, name="addCourse"),
+    path("editCourse/<str:cid>", course_views.addCourse, name="editCourse"),
 ] + [
     # 组织相关操作
     path("saveShowPositionStatus", org_views.saveShowPositionStatus, name="saveShowPositionStatus"),
