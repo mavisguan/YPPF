@@ -278,6 +278,7 @@ def course_base_check(request):
     course_ends = [datetime.strptime(course_end, "%Y-%m-%d %H:%M") for course_end in course_ends]
     for i in range(len(course_starts)):
         assert check_ac_time(course_starts[i], course_ends[i])
+        assert course_starts[i].day() == course_ends[i].day()
     context['course_starts'] = course_starts
     context['course_ends'] = course_ends
 
