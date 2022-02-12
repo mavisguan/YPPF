@@ -13,6 +13,7 @@ __all__ = [
     'NaturalPerson',
     'Freshman',
     'OrganizationType',
+    'OrganizationTag',
     # 'Semester',
     'Organization',
     'Position',
@@ -146,6 +147,9 @@ class NaturalPerson(models.Model):
         choices=ReceiveLevel.choices, default=0,
         help_text='允许微信接收的最低消息等级，更低等级的通知类消息将被屏蔽'
         )
+
+    accept_promote = models.BooleanField(default=True)    # 是否接受推广消息
+    active_score = models.FloatField("活跃度", default=0)  # 用户活跃度
 
     def __str__(self):
         return str(self.name)
@@ -281,6 +285,14 @@ class Semester(models.TextChoices):
             raise NotImplementedError("出现未设计的学期状态")
 
 
+class OrganizationTag(models.Model):
+    class Meta:
+        verbose_name = "组织类型标签"
+        verbose_name_plural = verbose_name
+    
+    name = models.CharField("标签名", max_length=10, blank=False)
+
+
 class OrganizationManager(models.Manager):
     def activated(self):
         return self.exclude(status=False)
@@ -307,6 +319,9 @@ class Organization(models.Model):
 
     first_time_login = models.BooleanField(default=True)  # 是否第一次登录
     inform_share = models.BooleanField(default=True) # 是否第一次展示有关分享的帮助
+        
+    # 组织类型标签，一个组织可能同时有多个标签
+    tags = models.ManyToManyField(OrganizationTag)
 
     def __str__(self):
         return str(self.oname)
@@ -1351,6 +1366,11 @@ class Course(models.Model):
                               upload_to=f"course/photo/%Y/",
                               blank=True)
 
+    # 课程群二维码
+    QRcode = models.ImageField(upload_to=f"course/QRcode/%Y/", 
+                               blank=True, 
+                               null=True) 
+                                
     objects = CourseManager()
 
     def save(self, *args, **kwargs):
@@ -1378,6 +1398,8 @@ class CourseTime(models.Model):
     # 需要提醒助教，填写的时间是第一周上课的时间，这影响到课程活动的统一开设。
     start = models.DateTimeField("开始时间")
     end = models.DateTimeField("结束时间")
+    cur_week = models.IntegerField("已生成周数", default=0)
+    end_week = models.IntegerField("总周数", default=1)
 
 
 class CourseParticipant(models.Model):

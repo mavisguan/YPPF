@@ -13,11 +13,12 @@ admin.site.site_header = '元培成长档案 - 管理后台'
 class NaturalPersonAdmin(admin.ModelAdmin):
     fieldsets = (
         [
-            "Commom Attributes",
+            "Common Attributes",
             {
                 "fields": (
                     "person_id", "name", "nickname", "gender", "identity", "status",
                     "YQPoint", "YQPoint_Bonus", "bonusPoint", "wechat_receive_level",
+                    "accept_promote", "active_score",
                     "stu_id_dbonly",
                     ),
             }
@@ -737,3 +738,4 @@ class CourseParticipantAdmin(admin.ModelAdmin):
 
 admin.site.register(YQPointDistribute)
 admin.site.register(QandA)
+admin.site.register(OrganizationTag)
