@@ -107,12 +107,15 @@
                                             <div class="form-group">
                                                 <label>课程名称</label>
                                                 <input type="text" id="name" name="name" class="form-control"
-                                                    aria-label="Default" placeholder="取一个有趣的课程名称吧~" required="required" 
-                                                    maxlength=50 onclick="fill_value(this)">
+                                                    aria-label="Default" placeholder="取一个有趣而贴切的课程名称吧~" required="required" 
+                                                    maxlength=50 onclick="fill_value(this)" value=
+                                                    "{% if name %}{{name}}
+                                                    {% else %}{{html_display.applicant_name}} 
+                                                    {% endif %}">
                                             </div>
 
                                             
-                                            <div class="form-group">
+                                            <div>
                                                 <label>课程类型及报名模式</label> 
                                                 <a data-toggle="tooltip" data-placement="bottom" title="请在德、智、体、美、劳五个课程类型中选择一项，并设置课程报名模式为先到先得/抽签模式">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -127,35 +130,35 @@
                                                     <div class="input-group-prepend">
                                                         <button class="btn btn-outline-primary dropdown-toggle"
                                                             type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false" id="pricebutton">&nbsp;&nbsp;选择课程类型&nbsp;&nbsp;
+                                                            aria-expanded="false" id="pricebutton1">&nbsp;&nbsp;{{type|default:"选择课程类型"}}&nbsp;&nbsp;
                                                         </button>
                                                         <div class="dropdown-menu">
-                                                            <a class="dropdown-item" onclick="shows($(this).text())" 
-                                                                id="0" name="0" value="de">&nbsp;&nbsp;德&nbsp;&nbsp;</a>
-                                                            <a class="dropdown-item" onclick="shows($(this).text())"
-                                                                id="1" name="1" value="bid">&nbsp;&nbsp;智&nbsp;&nbsp;</a>
-                                                            <a class="dropdown-item" onclick="shows($(this).text())"
-                                                                id="2" name="2" value="bid">&nbsp;&nbsp;体&nbsp;&nbsp;</a>
-                                                            <a class="dropdown-item" onclick="shows($(this).text())"
-                                                                id="3" name="3" value="bid">&nbsp;&nbsp;美&nbsp;&nbsp;</a>
-                                                            <a class="dropdown-item" onclick="shows($(this).text())"
-                                                                id="4" name="4" value="bid">&nbsp;&nbsp;劳&nbsp;&nbsp;</a>
+                                                            <a class="dropdown-item" onclick="shows1($(this).text())" 
+                                                                id="type0" name="type" value="0">&nbsp;&nbsp;“德”类课程&nbsp;&nbsp;</a>
+                                                            <a class="dropdown-item" onclick="shows1($(this).text())"
+                                                            id="type1" name="type" value="1">&nbsp;&nbsp;“智”类课程&nbsp;&nbsp;</a>
+                                                            <a class="dropdown-item" onclick="shows1($(this).text())"
+                                                            id="type2" name="type" value="2">&nbsp;&nbsp;“体”类课程&nbsp;&nbsp;</a>
+                                                            <a class="dropdown-item" onclick="shows1($(this).text())"
+                                                            id="type3" name="type" value="3">&nbsp;&nbsp;“美”类课程&nbsp;&nbsp;</a>
+                                                            <a class="dropdown-item" onclick="shows1($(this).text())"
+                                                            id="type4" name="type" value="4">&nbsp;&nbsp;“劳”类课程&nbsp;&nbsp;</a>
                                                         </div>
-                                                        <input type="hidden" id="signscheme" name="type"
+                                                        <input type="hidden" id="type" name="type"
                                                             value="" />                                                        
                                                     </div>
                                                     <div class="input-group-prepend">
                                                         <button class="btn btn-outline-primary dropdown-toggle"
                                                             type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false" id="pricebutton">&nbsp;&nbsp;选择报名模式&nbsp;&nbsp;
+                                                            aria-expanded="false" id="pricebutton2">&nbsp;&nbsp;选择报名模式&nbsp;&nbsp;
                                                         </button>
                                                         <div class="dropdown-menu">
-                                                            <a class="dropdown-item" onclick="shows($(this).text())"
+                                                            <a class="dropdown-item" onclick="shows2($(this).text())"
                                                                 name="get" value="get">&nbsp;&nbsp;先到先得&nbsp;&nbsp;</a>
-                                                            <a class="dropdown-item" onclick="shows($(this).text())"
+                                                            <a class="dropdown-item" onclick="shows2($(this).text())"
                                                                 id="bid" name="bid" value="bid">&nbsp;&nbsp;抽签模式&nbsp;&nbsp;</a>
                                                         </div>
-                                                        <input type="hidden" id="signscheme" name="signscheme"
+                                                        <input type="hidden" id="signscheme2" name="signscheme"
                                                             value="" />
                                                     </div>
                                                 </div>
@@ -208,35 +211,34 @@
                                                             d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
                                                     </svg>
                                                 </a>
-                                                <!-- 暂时没有改下面的name，因为没找到Course里对应到Coursetime的外键列 -->
                                                 <div class="row">
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker3"
-                                                            name="course1_start" placeholder="第一周的上课时间 No.1" required="required" onclick="fill_value(this)"/>
+                                                        <input type="text" class="form-control" id="datetimepicker1_start"
+                                                            name="start" placeholder="第一周的上课时间 No.1" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker4"
-                                                            name="course1_end" placeholder="第一周的下课时间 No.1" required="required" onclick="fill_value(this)"/>
+                                                        <input type="text" class="form-control" id="datetimepicker1_end"
+                                                            name="end" placeholder="第一周的下课时间 No.1" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker3"
-                                                            name="course2_start" placeholder="第一周的上课时间 No.2" required="required" onclick="fill_value(this)"/>
+                                                        <input type="text" class="form-control" id="datetimepicker2_start"
+                                                            name="start" placeholder="第一周的上课时间 No.2" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker4"
-                                                            name="course2_end" placeholder="第一周的下课时间 No.2" required="required" onclick="fill_value(this)"/>
+                                                        <input type="text" class="form-control" id="datetimepicker2_end"
+                                                            name="end" placeholder="第一周的下课时间 No.2" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker3"
-                                                            name="course3_start" placeholder="第一周的上课时间 No.3" required="required" onclick="fill_value(this)"/>
+                                                        <input type="text" class="form-control" id="datetimepicker3_start"
+                                                            name="start" placeholder="第一周的上课时间 No.3" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker4"
-                                                            name="course3_end" placeholder="第一周的下课时间 No.3" required="required" onclick="fill_value(this)"/>
+                                                        <input type="text" class="form-control" id="datetimepicker3_end"
+                                                            name="end" placeholder="第一周的下课时间 No.3" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -253,11 +255,11 @@
                                                 </a>
                                                 <div class="row">
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker3"
+                                                        <input type="text" class="form-control" id="yx_datetimepicker1"
                                                             name="stage1_start" placeholder="预选开始时间" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker4"
+                                                        <input type="text" class="form-control" id="yx_datetimepicker2"
                                                             name="stage1_end" placeholder="预选结束时间" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                 </div>
@@ -275,11 +277,11 @@
                                                 </a>
                                                 <div class="row">
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker3"
+                                                        <input type="text" class="form-control" id="btx_datetimepicker1"
                                                             name="stage2_start" placeholder="补退选开始时间" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                     <div class="col">
-                                                        <input type="text" class="form-control" id="datetimepicker4"
+                                                        <input type="text" class="form-control" id="btx_datetimepicker2"
                                                             name="stage2_end" placeholder="补退选结束时间" required="required" onclick="fill_value(this)"/>
                                                     </div>
                                                 </div>
@@ -300,7 +302,7 @@
                                             <div class="form-group">
                                                 <label for="aintro">课程简介</label>
                                                 <textarea id="aintro" name="introduction" class="form-control" rows="3"
-                                                    placeholder="在这里简要介绍一下课程内容和亮点..." onclick="fill_value(this)" 
+                                                    placeholder="在这里介绍一下课程内容、教学计划..." onclick="fill_value(this)" 
                                                     required="required" maxlength=225></textarea>
                                             </div>
 
@@ -513,31 +515,34 @@
         }
         $("#upload_annouce_photo").html(text);
     }
+    function shows1(a) {
+        $("#pricebutton1").text(a);
+        if (a.lastIndexOf("德") != -1) {
+            document.getElementById("type").value = "0";
+        } else if (a.lastIndexOf("智") != -1){
+            document.getElementById("type").value = "1";
+        }
+        else if (a.lastIndexOf("体") != -1){
+            document.getElementById("type").value = "2";
+        }
+        else if (a.lastIndexOf("美") != -1){
+            document.getElementById("type").value = "3";
+        }
+        else if (a.lastIndexOf("劳") != -1){
+            document.getElementById("type").value = "4";
+        }
+        else {
+            document.getElementById("type").value = "";
+        }
 
-    function shows(a) {
-        $("#pricebutton").text(a);
+    }
+
+    function shows2(a) {
+        $("#pricebutton2").text(a);
         if (a.lastIndexOf("先到先得") != -1) {
             document.getElementById("signscheme").value = "0";
         } else {
             document.getElementById("signscheme").value = "1";
-        }
-    }
-    function another_shows(a) {
-        $("#yq_source").text(a);
-        if ("向学生收取" === a) {
-            {% if not edit %}
-            document.getElementById("aprice").placeholder = "参与活动元气值价格";
-            {% endif %}
-            document.getElementById("from_college").value = "0";
-            document.getElementById("reason_block").style.display = "none";
-            document.getElementById("apply_reason").required = "";
-        } else {
-            {% if not edit %}
-            document.getElementById("aprice").placeholder = "向学院申请的元气值数量";
-            {% endif %}
-            document.getElementById("from_college").value = "1";
-            document.getElementById("reason_block").style.display = "";
-            document.getElementById("apply_reason").required = "required";
         }
     }
 </script>
@@ -545,57 +550,98 @@
 <!-- 选择时间 -->
 <script type="text/javascript">
     $(function () {
-        $("#datetimepicker1").datetimepicker({
-            format: "YYYY-MM-DD HH:mm",
-            sideBySide: true,
-        });
-        $("#datetimepicker2").datetimepicker({
-            format: "YYYY-MM-DD HH:mm",
-            sideBySide: true
-        });
-        $("#datetimepicker3").datetimepicker({
+        $("#datetimepicker1_start").datetimepicker({
             format: "YYYY-MM-DD HH:mm",
             sideBySide: true,
             minDate: new Date(),
         });
-        $("#datetimepicker4").datetimepicker({
+        $("#datetimepicker1_end").datetimepicker({
             format: "YYYY-MM-DD HH:mm",
             sideBySide: true,
             minDate: new Date(),
         });
+        $("#datetimepicker2_start").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#datetimepicker2_end").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#datetimepicker3_start").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#datetimepicker3_end").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#yx_datetimepicker1").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#yx_datetimepicker2").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#btx_datetimepicker1").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+        $("#btx_datetimepicker2").datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            sideBySide: true,
+            minDate: new Date(),
+        });
+
     });
 </script>
 
 
 {% if use_template %}
 <script type="text/javascript">
-    document.getElementById("title").value = "{{title | safe}}";
-    document.getElementById("location").value = "{{location | safe}}";
-    document.getElementById("budget").value = "{{budget}}";   
-    document.getElementById("datetimepicker3").value="{{start}}";
-    document.getElementById("datetimepicker4").value="{{end}}";
-    document.getElementById("examine_teacher").value="{{examine_teacher}}";
-    {% if activity.recorded %}
-    document.getElementById("recorded").checked = true;
-    document.getElementById("yq_source").innerHTML = "向学生收取";
-    document.getElementById("college").style.display = "none";
-    document.getElementById("from_college").value = "0";
-    document.getElementById("reason_block").style.display = "none";
-    document.getElementById("apply_reason").required = "";
-    document.getElementById("aprice").placeholder = "参与活动元气值价格";
-    {% endif %}
+    document.getElementById("name").value = "{{name | safe}}";
+    document.getElementById("classroom").value = "{{classroom | safe}}";
+    document.getElementById("capacity").value = "{{capacity}}";   
+    document.getElementById("datetimepicker1_start").value="{{start.0}}";
+    document.getElementById("datetimepicker2_start").value="{{start.1}}";
+    document.getElementById("datetimepicker3_start").value="{{start.2}}";
+    document.getElementById("yx_datetimepicker1").value="{{stage1_start}}";
+    document.getElementById("btx_datetimepicker1").value="{{stage2_start}}";
+    document.getElementById("datetimepicker1_end").value="{{end.0}}";
+    document.getElementById("datetimepicker2_end").value="{{end.1}}";
+    document.getElementById("datetimepicker3_end").value="{{end.2}}";
+    document.getElementById("yx_datetimepicker2").value="{{stage1_end}}";
+    document.getElementById("btx_datetimepicker2").value="{{stage2_end}}";
+    // document.getElementById("examine_teacher").value="{{examine_teacher}}";
+    // {% if activity.recorded %} （元气值相关）
+    // document.getElementById("recorded").checked = true;
+    // document.getElementById("yq_source").innerHTML = "向学生收取";
+    // document.getElementById("college").style.display = "none";
+    // document.getElementById("from_college").value = "0";
+    // document.getElementById("reason_block").style.display = "none";
+    // document.getElementById("apply_reason").required = "";
+    // document.getElementById("aprice").placeholder = "参与活动元气值价格";
+    // {% endif %}
     document.getElementById("pricebutton").innerHTML = "&nbsp;&nbsp;{{signscheme}}&nbsp;&nbsp;";
     if ("{{signscheme}}" == "先到先得") {
         document.getElementById("signscheme").value = "0";
     } else {
         document.getElementById("signscheme").value = "1";
     }
-    document.getElementById("yq_source").innerHTML = "{{yq_source}}";
-    if ("{{yq_source}}" == "向学生收取") {
-        document.getElementById("from_college").value = "0";
-    } else {
-        document.getElementById("from_college").value = "1";
-    }
+    // document.getElementById("yq_source").innerHTML = "{{yq_source}}";
+    // if ("{{yq_source}}" == "向学生收取") {
+    //     document.getElementById("from_college").value = "0";
+    // } else {
+    //     document.getElementById("from_college").value = "1";
+    // }
     document.getElementById("aprice").value = "{{amount}}";
     {% if no_limit %}
     document.getElementById("unlimited_capacity").checked = true;
@@ -639,11 +685,19 @@
     /* 将 palceholder 全部换为旧值，很长很啰嗦 */
     // 但是 Django 是做的文本替换，又必须全写出来......
     // 活动信息
-    document.getElementById("title").placeholder = "{{title | safe}}";
-    document.getElementById("location").placeholder = "{{location | safe}}";
-    document.getElementById("budget").placeholder="{{budget}}";
-    document.getElementById("datetimepicker3").placeholder="{{start}}";
-    document.getElementById("datetimepicker4").placeholder="{{end}}";
+    document.getElementById("name").value = "{{name | safe}}";
+    document.getElementById("classroom").value = "{{classroom | safe}}";
+    document.getElementById("capacity").value = "{{capacity}}";   
+    document.getElementById("datetimepicker1_start").value="{{start.0}}";
+    document.getElementById("datetimepicker2_start").value="{{start.1}}";
+    document.getElementById("datetimepicker3_start").value="{{start.2}}";
+    document.getElementById("yx_datetimepicker1").value="{{stage1_start}}";
+    document.getElementById("btx_datetimepicker1").value="{{stage2_start}}";
+    document.getElementById("datetimepicker1_end").value="{{end.0}}";
+    document.getElementById("datetimepicker2_end").value="{{end.1}}";
+    document.getElementById("datetimepicker3_end").value="{{end.2}}";
+    document.getElementById("yx_datetimepicker2").value="{{stage1_end}}";
+    document.getElementById("btx_datetimepicker2").value="{{stage2_end}}";
     {% if not examine %}
     document.getElementById("examine_teacher").value="{{examine_teacher}}";
     document.getElementById("examine_teacher").disabled=true;
@@ -759,18 +813,56 @@
 <script type="text/javascript">
     function check_inputs() {
         /*   检查开始与结束时间   */
-        var start = document.getElementById("datetimepicker3").value;
-        var end = document.getElementById("datetimepicker4").value;
+        var yx_start = document.getElementById("yx_datetimepicker1").value;
+        var yx_end = document.getElementById("yx_datetimepicker2").value;
+        var btx_start = document.getElementById("btx_datetimepicker1").value;
+        var btx_end = document.getElementById("btx_datetimepicker2").value;        
+        /* 三个第一周上课起止时间 */
+        var start1 = document.getElementById("datetimepicker1_start").value;
+        var end1 = document.getElementById("datetimepicker1_end").value;
+        var start2 = document.getElementById("datetimepicker1_start2").value;
+        var end2 = document.getElementById("datetimepicker1_end2").value;
+        var start3 = document.getElementById("datetimepicker1_start3").value;
+        var end3 = document.getElementById("datetimepicker_end3").value;
+
         var now = new Date();
         var prepare_option = document.getElementById("inputState").value;
-        if (start == "")
-            start = document.getElementById("datetimepicker3").placeholder;
-        if (end == "")
-            end = document.getElementById("datetimepicker4").placeholder;
-        start = new Date(start);
-        end = new Date(end);
+
+        if (yx_start == "")
+            yx_start = document.getElementById("yx_datetimepicker1").placeholder;
+        if (yx_end == "")
+            yx_end = document.getElementById("yx_datetimepicker2").placeholder;
+        if (btx_start == "")
+            btx_start = document.getElementById("btx_datetimepicker1").placeholder;
+        if (btx_end == "")
+            btx_end = document.getElementById("btx_datetimepicker2").placeholder;
+            if (btx_start == "")
+            btx_start = document.getElementById("btx_datetimepicker1").placeholder;
+        if (btx_end == "")
+            btx_end = document.getElementById("btx_datetimepicker2").placeholder;
+            if (btx_start == "")
+            btx_start = document.getElementById("btx_datetimepicker1").placeholder;
+        if (btx_end == "")
+            btx_end = document.getElementById("btx_datetimepicker2").placeholder;
+            if (btx_start == "")
+            btx_start = document.getElementById("btx_datetimepicker1").placeholder;
+        if (btx_end == "")
+            btx_end = document.getElementById("btx_datetimepicker2").placeholder;
+        
+
+        yx_start = new Date(yx_start);
+        yx_end = new Date(yx_end);
+        btx_start = new Date(btx_start);
+        btx_end = new Date(btx_end);
+        start1 = new Date(start1);
+        end1 = new Date(end1);
+        start2 = new Date(start2);
+        end2 = new Date(end2);
+        start3 = new Date(start3);
+        end3 = new Date(end3);
+
         // 结束要比开始晚
-        if (start >= end) {
+        if (yx_start >= yx_end || btx_start >= btx_end || start1 >= end1 || start2 >= end2 || start3 >= end3) {
             document.getElementById("success_msg").style.display = "none";
             document.getElementById("warn_msg").style.display = "";
             document.getElementById("warn_msg").innerHTML = "结束时间要晚于开始时间。";
@@ -781,17 +873,17 @@
         {% if not accepted %}
         var in_month = new Date();
         in_month = new Date(in_month.setDate(in_month.getDate() + 30));
-        if (in_month <= start) {
+        if (in_month <= start1 || in_month <= start2 || in_month <= start3 || in_month <= yx_start || in_month <= btx_start) {
             {% if html_display.warn_code == 2 %}
             document.getElementById("success_msg").style.display = "none";
             {% endif %}
             document.getElementById("warn_msg").style.display = "";
-            document.getElementById("warn_msg").innerHTML = "活动应在一个月之内申请，晚些再创建吧。";
+            document.getElementById("warn_msg").innerHTML = "开课应在一个月之内进行申请，晚些再申请吧。";
             document.body.scrollTop = document.documentElement.scrollTop = 0;
             return false;
         }
         {% endif %}
-        // 创建活动时，要求开始时间 - 准备时间应该晚于当下，即活动必须要能进入 applying 阶段
+        // 创建活动时，要求开始时间 - 准备时间应该晚于当下，即活动必须要能进入 applying 阶段（怎么改？
         {% if not edit %}
         var applyEnd;
         if (prepare_option == "0")

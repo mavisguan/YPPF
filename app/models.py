@@ -1287,7 +1287,7 @@ class Course(models.Model):
         verbose_name_plural = verbose_name
         ordering = ["id"]
 
-    title = models.CharField("课程名称", max_length=60, default="")
+    name = models.CharField("课程名称", max_length=60, default="")
     organization = models.ForeignKey(Organization,
                                      on_delete=models.CASCADE,
                                      verbose_name="开课组织")
@@ -1302,7 +1302,7 @@ class Course(models.Model):
 
     # 课程开设的周数
     times = models.SmallIntegerField("课程开设周数", default=7)
-    location = models.CharField("预期上课地点",
+    classroom = models.CharField("预期上课地点",
                                  max_length=60,
                                  default="",
                                  blank=True)
