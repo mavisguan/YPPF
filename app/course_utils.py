@@ -7,6 +7,8 @@ from app.models import (
     ActivityPhoto,
     Position,
     Participant,
+    Course,
+    CourseTime,
 )
 from app.utils import get_person_or_org
 from app.notification_utils import(
@@ -238,3 +240,151 @@ def cancel_course_activity(request, activity):
     scheduler.remove_job(f"activity_{activity.id}_{Activity.Status.END}")
 
     activity.save()
+
+
+def course_base_check(request):
+    context = dict()
+
+    # name, introduction, classroom 创建时不能为空
+    context["name"] = request.POST["name"]
+    context["introduction"] = request.POST["introduction"]
+    context["classroom"] = request.POST["classroom"]
+    assert len(context["name"]) > 0
+    assert len(context["introduction"]) > 0
+    assert len(context["classroom"]) > 0
+
+    # 时间
+    stage1_start = datetime.strptime(request.POST["stage1_start"], "%Y-%m-%d %H:%M")  # 预选开始时间
+    stage1_end = datetime.strptime(request.POST["stage1_end"], "%Y-%m-%d %H:%M")  # 预选结束时间
+    stage2_start = datetime.strptime(request.POST["stage2_start"], "%Y-%m-%d %H:%M")  # 补退选开始时间
+    stage2_end = datetime.strptime(request.POST["stage2_end"], "%Y-%m-%d %H:%M")  # 补退选结束时间
+    context["stage1_start"] = stage1_start
+    context["stage1_end"] = stage1_end
+    context["stage2_start"] = stage2_start
+    context["stage2_end"] = stage2_end
+    # assert check_ac_time(stage1_start, stage1_end)
+    # assert check_ac_time(stage2_start, stage2_end)
+    # # 预选开始时间和结束时间不应该相隔太近
+    # assert stage1_end > stage1_start + timedelta(days=7)
+    # # 预选结束时间和补退选开始时间不应该相隔太近
+    # assert stage2_start > stage1_end + timedelta(days=3)
+
+    # 每周课程时间
+    course_starts = request.POST.getlist("start")
+    course_ends = request.POST.getlist("end")
+    course_starts = [datetime.strptime(course_start, "%Y-%m-%d %H:%M") for course_start in course_starts]
+    course_ends = [datetime.strptime(course_end, "%Y-%m-%d %H:%M") for course_end in course_ends]
+    # for i in range(len(course_starts)):
+    #     assert check_ac_time(course_starts[i], course_ends[i])
+    context['course_starts'] = course_starts
+    context['course_ends'] = course_ends
+
+    org = get_person_or_org(request.user, "Organization")
+    context['organization'] = org
+    context['times'] = request.POST["times"]
+    context['teacher'] = request.POST["teacher"]
+    context['type'] = request.POST["type"]
+    context["capacity"] = request.POST["capacity"]
+    # context['current_participants'] = request.POST["current_participants"]
+    context["photo"] = request.FILES.get("photo")
+    return context
+
+
+def create_course(request, course=None):
+    '''
+    检查课程，合法时寻找该课程，不存在时创建
+    返回(course.id, created)
+    '''
+    context = course_base_check(request)
+    
+    # 编辑已有课程
+    if course is not None:
+        course_time = course.time_set.all()
+        course_time.delete()
+
+        course.update(
+            name=context["name"],
+            organization=context['organization'],
+            # year=context['year'],
+            # semester=context['semester'],
+            times=context['times'],
+            classroom=context["classroom"],
+            teacher=context['teacher'],
+            stage1_start=context['stage1_start'],
+            stage1_end=context['stage1_end'],
+            stage2_start=context['stage2_start'],
+            stage2_end=context['stage2_end'],
+            # bidding=context["bidding"],
+            introduction=context["introduction"],
+            # status=context['status'],
+            type=context['type'],
+            capacity=context["capacity"],
+            # current_participants=context['current_participants'],
+            photo=context['photo'],
+            )
+
+        for i in range(len(context['course_starts'])):
+            CourseTime.objects.create(
+                course=course,
+                start=context['course_starts'][i],
+                end=context['course_ends'][i],
+                end_week=context['times'],
+            )
+
+    # 创建新课程
+    else:
+        # 查找是否有类似课程存在
+        old_ones = Course.objects.activated().filter(
+            name=context["name"],
+            teacher=context['teacher'],
+            classroom=context["classroom"],
+        )
+        if len(old_ones):
+            assert len(old_ones) == 1, "创建课程时，已存在的相似课程不唯一"
+            return old_ones[0].id, False
+        
+        # 检查完毕，创建课程
+        course = Course.objects.create(
+                        name=context["name"],
+                        organization=context['organization'],
+                        # year=context['year'],
+                        # semester=context['semester'],
+                        times=context['times'],
+                        classroom=context["classroom"],
+                        teacher=context['teacher'],
+                        stage1_start=context['stage1_start'],
+                        stage1_end=context['stage1_end'],
+                        stage2_start=context['stage2_start'],
+                        stage2_end=context['stage2_end'],
+                        # bidding=context["bidding"],
+                        introduction=context["introduction"],
+                        # status=context['status'],
+                        type=context['type'],
+                        capacity=context["capacity"],
+                        # current_participants=context['current_participants'],
+                        photo=context['photo'],
+                    )
+
+        # 定时任务和微信消息有关吗，我还没了解怎么发微信消息orz不过定时任务还是能写出来的……应该
+
+        # scheduler.add_job(notifyActivity, "date", id=f"activity_{activity.id}_remind",
+        #     run_date=activity.start - timedelta(minutes=15), args=[activity.id, "remind"], replace_existing=True)
+        # # 活动状态修改
+        # scheduler.add_job(changeActivityStatus, "date", id=f"activity_{activity.id}_{Activity.Status.WAITING}",
+        #     run_date=activity.apply_end, args=[activity.id, Activity.Status.APPLYING, Activity.Status.WAITING])
+        # scheduler.add_job(changeActivityStatus, "date", id=f"activity_{activity.id}_{Activity.Status.PROGRESSING}",
+        #     run_date=activity.start, args=[activity.id, Activity.Status.WAITING, Activity.Status.PROGRESSING])
+        # scheduler.add_job(changeActivityStatus, "date", id=f"activity_{activity.id}_{Activity.Status.END}",
+        #     run_date=activity.end, args=[activity.id, Activity.Status.PROGRESSING, Activity.Status.END])
+
+        course.save()
+        
+        for i in range(len(context['course_starts'])):
+            CourseTime.objects.create(
+                course=course,
+                start=context['course_starts'][i],
+                end=context['course_ends'][i],
+                end_week=context['times'],
+            )
+
+    return course.id, True

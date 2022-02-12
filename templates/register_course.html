@@ -109,9 +109,7 @@
                                                 <input type="text" id="name" name="name" class="form-control"
                                                     aria-label="Default" placeholder="取一个有趣而贴切的课程名称吧~" required="required" 
                                                     maxlength=50 onclick="fill_value(this)" value=
-                                                    "{% if name %}{{name}}
-                                                    {% else %}{{html_display.applicant_name}} 
-                                                    {% endif %}">
+                                                    "{% if name %}{{name}}{% else %}{{html_display.applicant_name}}{% endif %}">
                                             </div>
 
                                             
