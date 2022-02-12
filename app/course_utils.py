@@ -262,20 +262,20 @@ def course_base_check(request):
     context["stage1_end"] = stage1_end
     context["stage2_start"] = stage2_start
     context["stage2_end"] = stage2_end
-    # assert check_ac_time(stage1_start, stage1_end)
-    # assert check_ac_time(stage2_start, stage2_end)
-    # # 预选开始时间和结束时间不应该相隔太近
-    # assert stage1_end > stage1_start + timedelta(days=7)
-    # # 预选结束时间和补退选开始时间不应该相隔太近
-    # assert stage2_start > stage1_end + timedelta(days=3)
+    assert check_ac_time(stage1_start, stage1_end)
+    assert check_ac_time(stage2_start, stage2_end)
+    # 预选开始时间和结束时间不应该相隔太近
+    assert stage1_end > stage1_start + timedelta(days=7)
+    # 预选结束时间和补退选开始时间不应该相隔太近
+    assert stage2_start > stage1_end + timedelta(days=3)
 
     # 每周课程时间
     course_starts = request.POST.getlist("start")
     course_ends = request.POST.getlist("end")
     course_starts = [datetime.strptime(course_start, "%Y-%m-%d %H:%M") for course_start in course_starts]
     course_ends = [datetime.strptime(course_end, "%Y-%m-%d %H:%M") for course_end in course_ends]
-    # for i in range(len(course_starts)):
-    #     assert check_ac_time(course_starts[i], course_ends[i])
+    for i in range(len(course_starts)):
+        assert check_ac_time(course_starts[i], course_ends[i])
     context['course_starts'] = course_starts
     context['course_ends'] = course_ends
 
