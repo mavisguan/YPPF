@@ -160,8 +160,8 @@ def addCourse(request, cid=None):
         # assert valid  已经在check_user_access检查过了
         me = utils.get_person_or_org(request.user, user_type) # 这里的me应该为小组账户
         if cid is None:
-            if user_type != "Organization":
-                return redirect(message_url(wrong('小组账号才能发起课程!')))
+            if user_type != "Organization" or me.otype.otype_name != "书院课程":
+                return redirect(message_url(wrong('书院课程账号才能发起课程!')))
             if me.oname == YQP_ONAME:
                 return redirect("/showCourse")
             edit = False
