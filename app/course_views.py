@@ -140,7 +140,7 @@ def addSingleCourseActivity(request):
 
 @login_required(redirect_field_name="origin")
 @utils.check_user_access(redirect_url="/logout/")
-@log.except_captured(EXCEPT_REDIRECT, source='views[addCourse]', record_user=True)
+@log.except_captured(EXCEPT_REDIRECT, source='course_views[addCourse]', record_user=True)
 def addCourse(request, cid=None):
     """
     发起课程页
@@ -161,10 +161,8 @@ def addCourse(request, cid=None):
         # assert valid  已经在check_user_access检查过了
         me = utils.get_person_or_org(request.user, user_type) # 这里的me应该为小组账户
         if cid is None:
-            if user_type != "Organization":
+            if user_type != "Organization" or me.otype.otype_name != "书院课程":
                 return redirect(message_url(wrong('书院课程账号才能发起课程!')))
-            if me.oname == YQP_ONAME:
-                return redirect("/showCourse")
             edit = False
         else:
             cid = int(cid)
