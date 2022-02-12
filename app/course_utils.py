@@ -32,6 +32,8 @@ __all__ = [
     'create_single_course_activity',
     'modify_course_activity',
     'cancel_course_activity',
+    'course_base_check',
+    'create_course',
 ]
 
 
